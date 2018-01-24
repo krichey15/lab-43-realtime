@@ -8,7 +8,8 @@ import {Provider} from 'react-redux'
 import App from './components/app'
 
 // TODO: instead of pulling in createStore and creating it here, pull in created store as an import
-import createStore from './app/store'
+
+import {store} from './app/store';
 const store = createStore();
 
 class Main extends React.Component {

@@ -5,6 +5,13 @@ import * as util from '../../lib/__';
 // Our Redux Actions
 import * as chatActions from './actions';
 
+import io from './io';
+import {store} from '../../app/store';
+
+import subscribers from './subscribers'
+
+io(store, subscribers);
+
 // TODO: Import io ibrary that connects to the server and dispatches messages to our actions via subscribers
 
 // TODO: Import the redux store that was created in main.js (need to pass this to the io library)
@@ -14,37 +21,42 @@ import * as chatActions from './actions';
 // TODO: call io() with the store and our subscribers
 
 class Chat extends React.Component {
-    
+
     constructor(props) {
         super(props);
         this.state = { content:'' };
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
-    
+
     handleChange(e){
         this.setState({content: e.target.value})
     }
 
     handleSubmit(e){
         e.preventDefault()
+        let packet = {
+          content: this.state,
+          meta: true
+        }
+        this.props.message(packet);
         // Call the messageCreate action with a packet for the server (meta and content)
     }
-    
+
     render() {
-        
+
         // TODO: Iterate the messages in state and display them nicely ...
         return (
             <div className='chat-container'>
-                
+
                 <ul>
                 </ul>
-                
+
                 <form onSubmit={this.handleSubmit}>
-                    <input 
+                    <input
                         type="text"
                         value={this.state.content}
-                        onChange={this.handleChange} 
+                        onChange={this.handleChange}
                     />
                 </form>
             </div>
@@ -55,11 +67,12 @@ class Chat extends React.Component {
 
 // TODO: map state.chat to props
 export const mapStateToProps = (state) => ({
+  chat: state.chat
 })
 
 // TODO: map the "message" chat action
 export const mapDispatchToProps = (dispatch) => ({
+  message: (data) => dispatch(chatActions.message(data))
 })
 
 export default connect(mapStateToProps,mapDispatchToProps)(Chat);
-
